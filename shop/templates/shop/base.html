@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% block title %}Django Shop{% endblock %}</title>
+
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+            rel="stylesheet"
+        />
+
+        <style>
+            /* Базовые сбросы и шрифты */
+            body {
+                font-family: "Inter", sans-serif;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+                background-color: #f8f9fa;
+            }
+
+            /* Шапка сайта */
+            header {
+                background-color: #ffffff;
+                border-bottom: 1px solid #e0e0e0;
+                padding: 1rem 0;
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+            }
+
+            .navbar {
+                max-width: 1200px;
+                margin: 0 auto;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0 20px;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: #2d3436;
+                text-decoration: none;
+                letter-spacing: -1px;
+            }
+
+            .nav-links a {
+                text-decoration: none;
+                color: #636e72;
+                margin-left: 20px;
+                font-weight: 500;
+                transition: color 0.2s;
+            }
+
+            .nav-links a:hover {
+                color: #0984e3;
+            }
+
+            /* Основной контент */
+            main {
+                flex: 1; /* Чтобы футер всегда был внизу */
+                max-width: 1200px;
+                width: 100%;
+                margin: 40px auto;
+                padding: 0 20px;
+                box-sizing: border-box;
+            }
+
+            /* Футер */
+            footer {
+                background-color: #2d3436;
+                color: #dfe6e9;
+                text-align: center;
+                padding: 2rem 0;
+                margin-top: auto;
+            }
+
+            /* Вспомогательные стили для кнопок из других шаблонов */
+            .btn {
+                display: inline-block;
+                padding: 10px 20px;
+                border-radius: 6px;
+                text-decoration: none;
+                font-weight: 600;
+                cursor: pointer;
+            }
+            .product-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 25px;
+                margin-top: 20px;
+            }
+
+            /* КАРТОЧКА */
+            .product-card {
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                transition:
+                    transform 0.2s,
+                    box-shadow 0.2s;
+                display: flex;
+                flex-direction: column;
+                border: 1px solid #eee; /* Чтобы было видно границы */
+            }
+
+            .product-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            }
+
+            .image-container img {
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+            }
+
+            .product-info {
+                padding: 15px;
+                text-align: center;
+            }
+
+            .product-title {
+                font-size: 1.1rem;
+                margin: 10px 0;
+                color: #333;
+            }
+
+            .product-price {
+                font-weight: bold;
+                color: #27ae60;
+                font-size: 1.2rem;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <nav class="navbar">
+                <a href="{% url 'product_list' %}" class="logo">PYTHON_SHOP</a>
+
+                <form
+                    action="{% url 'product_list' %}"
+                    method="GET"
+                    style="display: flex; gap: 5px"
+                >
+                    <input
+                        type="text"
+                        name="q"
+                        placeholder="Поиск товаров..."
+                        value="{{ request.GET.q }}"
+                        style="
+                            padding: 5px 10px;
+                            border-radius: 4px;
+                            border: 1px solid #ccc;
+                        "
+                    />
+                    <button
+                        type="submit"
+                        class="btn"
+                        style="
+                            background: #3498db;
+                            color: white;
+                            padding: 5px 15px;
+                            border: none;
+                            font-size: 0.9rem;
+                        "
+                    >
+                        Найти
+                    </button>
+                </form>
+
+                <div class="nav-links">
+                    <a href="{% url 'product_list' %}">Каталог</a>
+                    <a href="/admin/">Админка</a>
+                    <a href="#">Корзина (0)</a>
+                </div>
+            </nav>
+        </header>
+
+        <main>{% block content %} {% endblock %}</main>
+
+        <footer>
+            <div class="container">
+                <p>
+                    &copy; 2026 Django Shop Project. Сделано с любовью на
+                    Python.
+                </p>
+            </div>
+        </footer>
+    </body>
+</html>
