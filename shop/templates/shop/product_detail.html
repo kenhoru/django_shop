@@ -1,61 +1,54 @@
-<!doctype html>
-<html lang="ru">
-    <head>
-        <meta charset="UTF-8" />
-        <title>{{ product.title }}</title>
-        <style>
-            .container {
-                max-width: 800px;
-                margin: 50px auto;
-                display: flex;
-                gap: 30px;
-                font-family: sans-serif;
-            }
-            .product-image {
-                width: 400px;
-                border-radius: 10px;
-            }
-            .back-link {
+{% extends "shop/base.html" %} {% block title %}{{ product.title }}{% endblock%}
+{% block content %}
+<div
+    style="
+        max-width: 800px;
+        margin: 0 auto;
+        display: flex;
+        gap: 30px;
+        font-family: sans-serif;
+    "
+>
+    <div>
+        <a
+            href="{% url 'product_list' %}"
+            style="
                 display: block;
                 margin-bottom: 20px;
                 color: #3498db;
                 text-decoration: none;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div>
-                <a href="{% url 'product_list' %}" class="back-link"
-                    >← Назад в каталог</a
-                >
-                {% if product.image %}
-                <img src="{{ product.image.url }}" class="product-image" />
-                {% endif %}
-            </div>
-            <div>
-                <h1>{{ product.title }}</h1>
-                <p style="font-size: 1.5em; color: #27ae60">
-                    {{ product.price }} ₽
-                </p>
-                <p>{{ product.description }}</p>
-                <p>
-                    <small
-                        >Добавлено: {{ product.created_at|date:"d.m.Y" }}</small
-                    >
-                </p>
-                <button
-                    style="
-                        padding: 10px 20px;
-                        background: #27ae60;
-                        color: white;
-                        border: none;
-                        cursor: pointer;
-                    "
-                >
-                    Добавить в корзину
-                </button>
-            </div>
-        </div>
-    </body>
-</html>
+            "
+        >
+            ← Назад в каталог
+        </a>
+        {% if product.image %}
+        <img
+            src="{{ product.image.url }}"
+            style="width: 400px; border-radius: 10px"
+        />
+        {% endif %}
+    </div>
+
+    <div>
+        <h1>{{ product.title }}</h1>
+        <p style="font-size: 1.5em; color: #27ae60">{{ product.price }} ₽</p>
+        <p>{{ product.description }}</p>
+        <p><small>Добавлено: {{ product.created_at|date:"d.m.Y" }}</small></p>
+
+        <a
+            href="{% url 'cart_add' product.id %}"
+            style="
+                display: inline-block;
+                padding: 12px 25px;
+                background: #27ae60;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+                font-weight: bold;
+            "
+        >
+            Добавить в корзину
+        </a>
+    </div>
+</div>
+{% endblock %}
