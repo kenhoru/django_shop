@@ -178,7 +178,12 @@
                 <div class="nav-links">
                     <a href="{% url 'product_list' %}">Каталог</a>
                     <a href="/admin/">Админка</a>
-                    <a href="#">Корзина (0)</a>
+                    <a
+                        href="{% url 'cart_detail' %}"
+                        style="padding: 5px 12px; border-radius: 4px"
+                    >
+                        🛒 Корзина ({{ cart|length }})
+                    </a>
                 </div>
             </nav>
         </header>

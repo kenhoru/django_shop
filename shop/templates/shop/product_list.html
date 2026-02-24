@@ -1,18 +1,25 @@
 {% extends "shop/base.html" %} {% block content %}
-<div style="display: flex; gap: 30px">
-    <aside style="min-width: 200px">
-        <h3 style="margin-bottom: 20px">Категории</h3>
-        <ul style="list-style: none; padding: 0">
-            <li style="margin-bottom: 12px">
+<div style="display: flex; gap: 30px; align-items: flex-start">
+    <aside
+        style="
+            min-width: 250px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        "
+    >
+        <h3 style="margin-top: 0; margin-bottom: 20px; color: #2c3e50">
+            Категории
+        </h3>
+        <ul style="list-style: none; padding: 0; margin: 0">
+            <li style="margin-bottom: 10px">
                 <a
                     href="{% url 'product_list' %}"
-                    style="text-decoration: none;
-                          padding: 8px 12px;
-                          display: block;
-                          border-radius: 6px;
-                          {% if not current_category_id %} background-color: #3498db; color: white; {% else %} color: #333; {% endif %}"
+                    style="text-decoration: none; display: flex; justify-content: space-between; padding: 10px 15px; border-radius: 8px; transition: 0.3s;
+                   {% if not current_category_id %} background: #3498db; color: white; {% else %} color: #555; {% endif %}"
                 >
-                    Все товары
+                    <span>Все товары</span>
                 </a>
             </li>
 
@@ -20,25 +27,16 @@
             <li style="margin-bottom: 8px">
                 <a
                     href="?category={{ cat.id }}"
-                    style="text-decoration: none;
-                              padding: 8px 12px;
-                              display: flex; /* Сделаем flex, чтобы текст и число были по краям */
-                              justify-content: space-between;
-                              align-items: center;
-                              border-radius: 6px;
-                              transition: all 0.2s ease;
-                              {% if current_category_id == cat.id %}
-                                  background-color: #3498db;
-                                  color: white;
-                              {% else %}
-                                  color: #555;
-                              {% endif %}"
+                    style="text-decoration: none; display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; border-radius: 8px; transition: 0.3s;
+                   {% if current_category_id == cat.id %} background: #3498db; color: white; {% else %} color: #555; {% endif %}"
+                    onmouseover="this.style.background='#ecf0f1'; if('{{current_category_id}}'=='{{cat.id}}') this.style.background='#3498db';"
+                    onmouseout="if('{{current_category_id}}'!='{{cat.id}}') this.style.background='transparent';"
                 >
                     <span>{{ cat.title }}</span>
 
                     <span
                         style="
-                            font-size: 0.8rem;
+                            font-size: 0.75rem;
                             background: rgba(0, 0, 0, 0.1);
                             padding: 2px 8px;
                             border-radius: 10px;
@@ -52,36 +50,154 @@
         </ul>
     </aside>
 
-    <section style="flex-grow: 1">
-        {% if request.GET.q %}
-        <h1>Результаты поиска: "{{ request.GET.q }}"</h1>
-        {% elif current_category %}
-        <h1>Категория: {{ current_category.title }}</h1>
-        {% else %}
-        <h1>Все товары</h1>
-        {% endif %}
+    <main style="flex-grow: 1">
+        <div
+            style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 30px;
+            "
+        >
+            <h1 style="margin: 0; color: #2c3e50">
+                {% if request.GET.q %} Результаты поиска {% else %} Каталог
+                {%endif %}
+            </h1>
 
-        <div class="product-grid">
-            {% for p in products %}
-            <a
-                href="{% url 'product_detail' pk=p.pk %}"
-                class="product-card"
-                style="text-decoration: none; color: inherit"
+            <form
+                action="{% url 'product_list' %}"
+                method="get"
+                style="display: flex; gap: 10px"
             >
-                <div class="image-container">
-                    {% if p.image %}
-                    <img src="{{ p.image.url }}" alt="{{ p.title }}" />
-                    {% endif %}
-                </div>
-                <div class="product-info">
-                    <h3 class="product-title">{{ p.title }}</h3>
-                    <div class="product-price">{{ p.price }} ₽</div>
-                </div>
-            </a>
+                <input
+                    type="text"
+                    name="q"
+                    placeholder="Поиск товаров..."
+                    value="{{ request.GET.q }}"
+                    style="
+                        padding: 8px 15px;
+                        border: 1px solid #ddd;
+                        border-radius: 20px;
+                        outline: none;
+                        width: 250px;
+                    "
+                />
+                <button
+                    type="submit"
+                    style="
+                        background: #3498db;
+                        color: white;
+                        border: none;
+                        padding: 8px 20px;
+                        border-radius: 20px;
+                        cursor: pointer;
+                    "
+                >
+                    Найти
+                </button>
+            </form>
+        </div>
+
+        <div
+            style="
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 25px;
+            "
+        >
+            {% for p in products %}
+            <div
+                style="
+                    background: white;
+                    border-radius: 12px;
+                    overflow: hidden;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+                    transition: 0.3s;
+                "
+                onmouseover="this.style.transform = 'translateY(-5px)'"
+                onmouseout="this.style.transform = 'translateY(0)'"
+            >
+                <a
+                    href="{% url 'product_detail' p.id %}"
+                    style="text-decoration: none; color: inherit"
+                >
+                    <div
+                        style="
+                            height: 200px;
+                            background: #f9f9f9;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        "
+                    >
+                        {% if p.image %}
+                        <img
+                            src="{{ p.image.url }}"
+                            alt="{{ p.title }}"
+                            style="
+                                max-width: 100%;
+                                max-height: 100%;
+                                object-fit: contain;
+                            "
+                        />
+                        {% else %}
+                        <span style="color: #ccc">Нет фото</span>
+                        {% endif %}
+                    </div>
+
+                    <div style="padding: 15px">
+                        <h4
+                            style="
+                                margin: 0 0 10px 0;
+                                font-size: 1.1rem;
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                            "
+                        >
+                            {{ p.title }}
+                        </h4>
+                        <div
+                            style="
+                                color: #27ae60;
+                                font-weight: bold;
+                                font-size: 1.2rem;
+                                margin-bottom: 10px;
+                            "
+                        >
+                            {{ p.price }} ₽
+                        </div>
+                        <span
+                            style="
+                                display: inline-block;
+                                background: #3498db;
+                                color: white;
+                                padding: 5px 15px;
+                                border-radius: 5px;
+                                font-size: 0.9rem;
+                                width: 100%;
+                                text-align: center;
+                            "
+                        >
+                            Подробнее
+                        </span>
+                    </div>
+                </a>
+            </div>
             {% empty %}
-            <p>Товаров не найдено.</p>
+            <div
+                style="
+                    grid-column: 1 / -1;
+                    text-align: center;
+                    padding: 50px;
+                    color: #7f8c8d;
+                "
+            >
+                <h3>Товары не найдены</h3>
+                <p>Попробуйте изменить запрос или выбрать другую категорию.</p>
+            </div>
             {% endfor %}
         </div>
-    </section>
+    </main>
 </div>
 {% endblock %}
